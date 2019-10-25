@@ -1,0 +1,29 @@
+steps:
+
+  #Decrypt key
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['kms', 'decrypt', '--ciphertext-file=python/ci/secrets/pypi-secrets.sh.enc',
+           '--plaintext-file=python/ci/secrets/pypi-secrets.sh', '--location=global',
+           '--keyring=myelin-keyring', '--key=myelin-key']
+    id: 'secret'
+
+  - name: 'python:2.7-slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -e
+        python2 setup.py bdist_wheel
+
+  - name: 'python:3.6-slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -e
+        python3 setup.py bdist_wheel
+        pip3 install twine
+        source ci/secrets/pypi-secrets.sh
+        twine upload --username $$USERNAME --password $$PASSWORD  --repository-url https://upload.pypi.org/legacy/ dist/*
+
+timeout: 3600s

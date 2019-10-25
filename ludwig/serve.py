@@ -27,7 +27,8 @@ import tempfile
 from ludwig.api import LudwigModel
 from ludwig.contrib import contrib_command
 from ludwig.utils.print_utils import logging_level_registry
-
+import json
+import numpy as np
 logger = logging.getLogger(__name__)
 
 try:
@@ -64,7 +65,34 @@ def server(model):
     @app.post('/predict')
     async def predict(request: Request):
         form = await request.form()
-        files, entry = convert_input(form)
+        files, entry = convert_input(form, model)
+
+        try:
+            if (entry.keys() & input_features) != input_features:
+                return JSONResponse(ALL_FEATURES_PRESENT_ERROR,
+                                    status_code=400)
+            try:
+                prediction = model.predict(data_dict=entry)
+                names = prediction['class_predictions'].tolist()
+                data_array = prediction.drop(columns=['class_predictions', 'class_probability']).values.tolist()
+                datadef = {"names": names, "ndarray": data_array}
+                resp = {"data": datadef, "meta": {}}
+
+                return JSONResponse(resp)
+            except Exception as e:
+                logger.error("Error: {}".format(str(e)))
+                return JSONResponse(COULD_NOT_RUN_INFERENCE_ERROR,
+                                    status_code=500)
+        finally:
+            for f in files:
+                os.remove(f.name)
+
+    return app
+
+    @app.post('/predict-ludwig')
+    async def predict_ludwig(request: Request):
+        form = await request.form()
+        files, entry = convert_input_ludwig(form)
 
         try:
             if (entry.keys() & input_features) != input_features:
@@ -83,8 +111,7 @@ def server(model):
 
     return app
 
-
-def convert_input(form):
+def convert_input_ludwig(form):
     '''
     Returns a new input and a list of files to be cleaned up
     '''
@@ -103,6 +130,33 @@ def convert_input(form):
         else:
             new_input[k] = v
 
+    return (files, new_input)
+
+
+def convert_input(form, model):
+    '''
+    Returns a new input and a list of files to be cleaned up
+    '''
+    jStr = form.get("json")
+    message = json.loads(jStr)
+    data_array = np.array(message.get("data").get("ndarray"))
+    new_input = {}
+    files = []
+    for k, v in form.multi_items():
+        if type(v) == UploadFile:
+            # Convert UploadFile to a NamedTemporaryFile to ensure it's on the disk
+            suffix = os.path.splitext(v.filename)[1]
+            named_file = tempfile.NamedTemporaryFile(
+                delete=False, suffix=suffix)
+            files.append(named_file)
+            named_file.write(v.file.read())
+            named_file.close()
+            new_input[k] = named_file.name
+        # else:
+        #     new_input[k] = v
+
+    for i, k in enumerate(model.model_definition['input_features']):
+        new_input[k['name']] = data_array[:, i]
     return (files, new_input)
 
 

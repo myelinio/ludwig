@@ -47,7 +47,7 @@ for req in requirements:
 extra_requirements['gpu'] = [tensorflow_gpu]
 
 setup(
-    name='ludwig',
+    name='ludwig-myelin',
 
     version='0.2.1',
 
