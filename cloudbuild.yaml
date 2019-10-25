@@ -2,7 +2,7 @@ steps:
 
   #Decrypt key
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['kms', 'decrypt', '--ciphertext-file=python/ci/secrets/pypi-secrets.sh.enc',
+    args: ['kms', 'decrypt', '--ciphertext-file=ci/secrets/pypi-secrets.sh.enc',
            '--plaintext-file=python/ci/secrets/pypi-secrets.sh', '--location=global',
            '--keyring=myelin-keyring', '--key=myelin-key']
     id: 'secret'

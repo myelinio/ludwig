@@ -63,9 +63,9 @@ def server(model):
         return JSONResponse({"message": "Ludwig server is up"})
 
     @app.post('/predict')
-    async def predict(request: Request):
+    async def predict_myelin(request: Request):
         form = await request.form()
-        files, entry = convert_input(form, model)
+        files, entry = convert_input_myelin(form, model)
 
         try:
             if (entry.keys() & input_features) != input_features:
@@ -90,9 +90,9 @@ def server(model):
     return app
 
     @app.post('/predict-ludwig')
-    async def predict_ludwig(request: Request):
+    async def predict(request: Request):
         form = await request.form()
-        files, entry = convert_input_ludwig(form)
+        files, entry = convert_input(form)
 
         try:
             if (entry.keys() & input_features) != input_features:
@@ -111,7 +111,7 @@ def server(model):
 
     return app
 
-def convert_input_ludwig(form):
+def convert_input(form):
     '''
     Returns a new input and a list of files to be cleaned up
     '''
@@ -133,7 +133,7 @@ def convert_input_ludwig(form):
     return (files, new_input)
 
 
-def convert_input(form, model):
+def convert_input_myelin(form, model):
     '''
     Returns a new input and a list of files to be cleaned up
     '''
