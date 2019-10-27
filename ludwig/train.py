@@ -44,6 +44,8 @@ from ludwig.utils.misc import get_from_registry
 from ludwig.utils.print_utils import logging_level_registry
 from ludwig.utils.print_utils import print_boxed
 from ludwig.utils.print_utils import print_ludwig
+from jinja2 import Template
+import myelin
 
 logger = logging.getLogger(__name__)
 
@@ -190,6 +192,10 @@ def full_train(
             model_definition = merge_with_defaults(yaml.safe_load(def_file))
     else:
         model_definition = merge_with_defaults(model_definition)
+
+    # Myelin substitute HP params
+    template = Template(model_definition)
+    model_definition = template.render(myelin.hpo.get_hpo_params())
 
     # setup directories and file names
     experiment_dir_name = None
@@ -782,7 +788,8 @@ def cli(sys_argv):
     if is_on_master():
         print_ludwig('Train', LUDWIG_VERSION)
 
-    full_train(**vars(args))
+    model, preprocessed_data, experiment_dir_name, train_stats, model_definition = full_train(**vars(args))
+    myelin.hpo.publish_result(train_stats['test'], 'test_loss')
 
 
 if __name__ == '__main__':
