@@ -789,7 +789,7 @@ def cli(sys_argv):
         print_ludwig('Train', LUDWIG_VERSION)
 
     model, preprocessed_data, experiment_dir_name, train_stats, model_definition = full_train(**vars(args))
-    myelin.hpo.publish_result(train_stats['test'], 'test_loss')
+    myelin.hpo.publish_result(train_stats['test'], myelin.hpo.get_loss_metric())
 
 
 if __name__ == '__main__':
