@@ -45,7 +45,7 @@ from ludwig.utils.print_utils import logging_level_registry
 from ludwig.utils.print_utils import print_boxed
 from ludwig.utils.print_utils import print_ludwig
 from jinja2 import Template
-import myelin
+import myelin.hpo
 
 logger = logging.getLogger(__name__)
 
