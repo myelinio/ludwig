@@ -575,7 +575,7 @@ def publish_result(stats, model_definition):
     validation_measure = model_definition['training']['validation_measure']
     measure = stats[validation_field][validation_measure]
     if type(measure) == list:
-        loss = [-1]
+        loss = measure[-1]
     else:
         loss = measure
     myelin.metric.publish_result(loss, myelin.metric.get_loss_metric())
