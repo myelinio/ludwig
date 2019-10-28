@@ -46,6 +46,7 @@ from ludwig.utils.print_utils import print_boxed
 from ludwig.utils.print_utils import print_ludwig
 from jinja2 import Template
 import myelin.hpo
+import myelin.metric
 
 logger = logging.getLogger(__name__)
 
@@ -191,7 +192,7 @@ def full_train(
         with open(model_definition_file, 'r') as def_file:
             model_definition = def_file.read()
 
-    # Myelin substitute HP params
+    #  Myelin: substitute HP params
     model_definition = model_definition.replace("[[", "{{", -1).replace("]]", "}}", -1)
     template = Template(model_definition)
     model_definition = template.render(myelin.hpo.get_hpo_config())
@@ -569,6 +570,17 @@ def get_file_names(experiment_dir_name):
     return description_fn, training_stats_fn, model_dir
 
 
+def publish_result(stats, model_definition):
+    validation_field = model_definition['training']['validation_field']
+    validation_measure = model_definition['training']['validation_measure']
+    measure = stats[validation_field][validation_measure]
+    if type(measure) == list:
+        loss = [-1]
+    else:
+        loss = measure
+    myelin.metric.publish_result(loss, myelin.metric.get_loss_metric())
+
+
 def cli(sys_argv):
     parser = argparse.ArgumentParser(
         description='This script trains a model',
@@ -789,8 +801,7 @@ def cli(sys_argv):
         print_ludwig('Train', LUDWIG_VERSION)
 
     model, preprocessed_data, experiment_dir_name, train_stats, model_definition = full_train(**vars(args))
-    myelin.hpo.publish_result(train_stats['test'], myelin.hpo.get_loss_metric())
-
+    publish_result(train_stats['test'], model_definition)
 
 if __name__ == '__main__':
     contrib_command("train", *sys.argv)

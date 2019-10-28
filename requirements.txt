@@ -9,5 +9,5 @@ tqdm
 tensorflow==1.14.0
 PyYAML>=3.12
 absl-py
-myelin>=0.0.29
+myelin>=0.0.31
 Jinja2>=2.10.3

@@ -31,7 +31,7 @@ from ludwig.predict import predict
 from ludwig.predict import print_test_results
 from ludwig.predict import save_prediction_outputs
 from ludwig.predict import save_test_statistics
-from ludwig.train import full_train
+from ludwig.train import full_train, publish_result
 from ludwig.utils.defaults import default_random_seed
 from ludwig.utils.print_utils import logging_level_registry
 from ludwig.utils.print_utils import print_ludwig
@@ -271,6 +271,8 @@ def experiment(
                 )
             if not skip_save_test_statistics:
                 save_test_statistics(test_results, experiment_dir_name)
+            publish_result(test_results, model_definition)
+
     model.close_session()
 
     if is_on_master():
