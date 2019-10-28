@@ -385,7 +385,6 @@ def cli(sys_argv):
     model_definition.add_argument(
         '-md',
         '--model_definition',
-        type=yaml.safe_load,
         help='model definition'
     )
     model_definition.add_argument(
