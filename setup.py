@@ -49,7 +49,7 @@ extra_requirements['gpu'] = [tensorflow_gpu]
 setup(
     name='ludwig-myelin',
 
-    version='0.2.1.6',
+    version='0.2.1.7',
 
     description='A deep learning experimentation toolbox',
     long_description=long_description,

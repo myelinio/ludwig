@@ -195,7 +195,7 @@ def full_train(
 
     # Myelin substitute HP params
     template = Template(model_definition)
-    model_definition = template.render(myelin.hpo.get_hpo_params())
+    model_definition = template.render(myelin.hpo.get_hpo_config())
 
     # setup directories and file names
     experiment_dir_name = None
