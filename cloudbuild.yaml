@@ -62,6 +62,6 @@ steps:
     id: 'docker'
 
 substitutions:
-  _LUDWIG_VERSION: 0.2.1.17
+  _LUDWIG_VERSION: 0.2.1.18
 
 timeout: 3600s
