@@ -2,11 +2,13 @@ ARG ludwig_version
 
 FROM python:3.6-slim
 
+ARG ludwig_version
+RUN  echo "ludwig_version: $ludwig_version"
+
 COPY ./requirements.txt requirements.txt
 
 COPY ./pip-wait.sh pip-wait.sh
-ENV _LUDWIG_VERSION=$ludwig_version
-RUN pip-wait.sh
+RUN ./pip-wait.sh $ludwig_version
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc build-essential \
