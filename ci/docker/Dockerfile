@@ -16,4 +16,8 @@ RUN apt-get update \
     && pip install -r  requirements.txt \
     && apt-get purge -y --auto-remove gcc build-essential
 
+COPY ./myelin-entrypoint.sh myelin-entrypoint.sh
 
+RUN chmod +x ./myelin-entrypoint.sh
+ENTRYPOINT ["./myelin-entrypoint.sh"]
+CMD []
