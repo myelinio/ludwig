@@ -193,7 +193,6 @@ def full_train(
             model_definition = def_file.read()
 
     #  Myelin: substitute HP params
-    model_definition = model_definition.replace("[[", "{{", -1).replace("]]", "}}", -1)
     template = Template(model_definition)
     model_definition = template.render(myelin.hpo.get_hpo_config())
 
