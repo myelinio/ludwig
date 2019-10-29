@@ -53,15 +53,15 @@ steps:
         set -e
         source ci/secrets/dockerhub-secrets.sh
         docker login --username=$$DOCKERHUB_USERID --password=$$DOCKERHUB_PASSWORD
-        docker build -t myelinio/ludwig:0.2.1 ci/docker -f ci/docker/Dockerfile
+        docker build -t myelinio/ludwig:0.2.1 ci/docker -f ci/docker/Dockerfile --build-arg ludwig_version=$_LUDWIG_VERSION
         docker push myelinio/ludwig:0.2.1
-        docker build -t myelinio/ludwig-deploy:0.2.1 ci/docker -f ci/docker/Dockerfile-deploy
+        docker build -t myelinio/ludwig-deploy:0.2.1 ci/docker -f ci/docker/Dockerfile-deploy --build-arg ludwig_version=$_LUDWIG_VERSION
         docker push myelinio/ludwig-deploy:0.2.1
 
     waitFor: ['docker-secrets', 'twine-wait']
     id: 'docker'
 
 substitutions:
-  _LUDWIG_VERSION: 0.2.1.14
+  _LUDWIG_VERSION: 0.2.1.15
 
 timeout: 3600s
