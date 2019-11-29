@@ -1,3 +1,1 @@
-ludwig-myelin[full]>=0.2.1.23
-h5py
-keras
+ludwig-myelin[full]>=0.2.1.24

@@ -1,6 +1,6 @@
 # Ludwig
 ```bash
-export _LUDWIG_VERSION=0.2.1.23
+export _LUDWIG_VERSION=0.2.1.24
 docker build -t myelinio/ludwig:0.2.1 ci/docker -f ci/docker/Dockerfile --build-arg ludwig_version=$_LUDWIG_VERSION
 docker push myelinio/ludwig:0.2.1
 
