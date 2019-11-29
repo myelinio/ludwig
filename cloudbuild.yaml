@@ -88,7 +88,7 @@ steps:
     id: 'docker-ludwig-horovod-gpu'
     
 substitutions:
-  _LUDWIG_VERSION: 0.2.1.25
+  _LUDWIG_VERSION: 0.2.1.26
 
 options:
   machineType: 'N1_HIGHCPU_8'
