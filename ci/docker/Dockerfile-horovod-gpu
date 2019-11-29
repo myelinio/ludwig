@@ -46,7 +46,7 @@ COPY ./requirements-horovod.txt requirements.txt
 
 RUN pip install -r  requirements.txt
 RUN pip uninstall -y tensorflow
-RUN pip install tensorflow-gpu
+RUN pip install tensorflow-gpu==1.14.0
 
 # Install Open MPI
 RUN mkdir /tmp/openmpi && \
