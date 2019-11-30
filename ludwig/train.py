@@ -800,7 +800,8 @@ def cli(sys_argv):
         print_ludwig('Train', LUDWIG_VERSION)
 
     model, preprocessed_data, experiment_dir_name, train_stats, model_definition = full_train(**vars(args))
-    publish_result(train_stats['test'], model_definition)
+    if is_on_master():
+        publish_result(train_stats['test'], model_definition)
 
 if __name__ == '__main__':
     contrib_command("train", *sys.argv)
