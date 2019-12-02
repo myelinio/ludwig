@@ -357,6 +357,7 @@ def full_train(
     if is_on_master():
         if not skip_save_training_statistics:
             save_json(training_stats_fn, train_stats)
+        publish_result(train_testset_stats, model_definition)
 
     # grab the results of the model with highest validation test performance
     validation_field = model_definition['training']['validation_field']
@@ -393,7 +394,6 @@ def full_train(
         logger.info('Saved to: {0}'.format(experiment_dir_name))
 
     contrib_command("train_save", experiment_dir_name)
-
     return (
         model,
         preprocessed_data,
@@ -572,11 +572,13 @@ def get_file_names(experiment_dir_name):
 def publish_result(stats, model_definition):
     validation_field = model_definition['training']['validation_field']
     validation_measure = model_definition['training']['validation_measure']
+    logger.info('publish_result stats: {}'.format(stats))
+    logger.info('publish_result stats[validation_field][validation_measure]: {}'.format(stats[validation_field][validation_measure]))
     measure = stats[validation_field][validation_measure]
-    if type(measure) == list:
+    if type(measure) == list and len(measure) > 0:
         loss = measure[-1]
     else:
-        loss = measure
+        loss = str(measure)
     myelin.metric.publish_result(loss, myelin.metric.get_loss_metric())
 
 
@@ -800,8 +802,6 @@ def cli(sys_argv):
         print_ludwig('Train', LUDWIG_VERSION)
 
     model, preprocessed_data, experiment_dir_name, train_stats, model_definition = full_train(**vars(args))
-    if is_on_master():
-        publish_result(train_stats['test'], model_definition)
 
 if __name__ == '__main__':
     contrib_command("train", *sys.argv)
