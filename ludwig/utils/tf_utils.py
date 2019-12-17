@@ -79,6 +79,14 @@ def get_tf_config(gpus=None, gpu_fraction=1, horovod=None,
         )
 
     if horovod is not None:
-        tf_config.gpu_options.visible_device_list = str(horovod.local_rank())
-
+        if gpus is not None:
+            tf_config.gpu_options.visible_device_list = str(horovod.local_rank())
+        else:
+            tf_config = tf.compat.v1.ConfigProto(
+                allow_soft_placement=True,
+                log_device_placement=True,
+                intra_op_parallelism_threads=intra_op_parallelism_threads,
+                inter_op_parallelism_threads=inter_op_parallelism_threads,
+                gpu_options=tf.GPUOptions(allow_growth=True)
+            )
     return tf_config

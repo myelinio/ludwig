@@ -102,7 +102,7 @@ steps:
     id: 'docker-ludwig-horovod-cpu'
     
 substitutions:
-  _LUDWIG_VERSION: 0.2.1.32
+  _LUDWIG_VERSION: 0.2.1.33
 
 options:
   machineType: 'N1_HIGHCPU_8'
