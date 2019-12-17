@@ -45,8 +45,6 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 COPY ./requirements-horovod.txt requirements.txt
 
 RUN pip install -r  requirements.txt
-RUN pip uninstall -y tensorflow
-RUN pip install tensorflow-gpu==1.15.0
 
 # Install Open MPI
 RUN mkdir /tmp/openmpi && \

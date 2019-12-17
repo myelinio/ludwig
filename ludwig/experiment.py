@@ -261,6 +261,7 @@ def experiment(
             experiment_dir_name,
             skip_save_unprocessed_output or not is_on_master()
         )
+        logger.info('experiment full_train stats: {}'.format(test_results))
 
         if is_on_master():
             print_test_results(test_results)

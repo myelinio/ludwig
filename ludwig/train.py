@@ -187,6 +187,9 @@ def full_train(
     :type debug: Boolean
     :returns: None
     """
+    print("********************** got  %s **********************" % random_seed)
+    # random_seed = random.randint(1, 100)
+    # print("********************** new %s **********************" % random_seed)
     # merge with default model definition to set defaults
     if model_definition_file is not None:
         with open(model_definition_file, 'r') as def_file:
@@ -196,7 +199,11 @@ def full_train(
     template = Template(model_definition)
     model_definition = template.render(myelin.hpo.get_hpo_config())
 
-    model_definition = merge_with_defaults(yaml.safe_load(model_definition))
+    yaml_def = yaml.safe_load(model_definition)
+    print("model_definition_file:", model_definition_file)
+    print("model_definition:", model_definition)
+    print("yaml_def:", yaml_def)
+    model_definition = merge_with_defaults(yaml_def)
 
     # setup directories and file names
     experiment_dir_name = None
@@ -349,6 +356,8 @@ def full_train(
         'validation': train_valisest_stats,
         'test': train_testset_stats
     }
+
+    logger.info('train full_train stats: {}'.format(train_trainset_stats))
 
     if should_close_session:
         model.close_session()
